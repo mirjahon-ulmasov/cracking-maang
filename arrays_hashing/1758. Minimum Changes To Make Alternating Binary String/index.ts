@@ -21,8 +21,39 @@ Output: 2
 Explanation: You need two operations to reach "0101" or "1010".
 */
 
+// -------------------------------------------------
 function minOperations(s: string): number {
-    return 0
+    let count1 = 0
+    let count2 = 0
+    const arr = s.split("")
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] == arr[i + 1]) {
+            arr[i + 1] = arr[i + 1] == "1" ? "0" : "1"
+            count1++
+        }
+    }
+    count2 = arr.length - count1
+    return count2 > count1 ? count1 : count2
 }
 
-console.log(minOperations("0100"))
+// -------------------------------------------------
+// Each string has only 2 options to make alternating: 01010 or 10101
+// If our string is 10010, we need 2 operations to make 010101, and 3 operations to make 10101.
+// So, if we found how many operation takes in first one, second one can be found using this formula
+// (length of string - count of first operations)
+// So, we takes one operation for example 10101, and compare each characters of string if in odd index char is '1', if no then count++, same stuff in even index with '0'   
+
+function minOperations2(s: string): number {
+    let count = 0
+    for (let i = 0; i < s.length; i++) {
+        if (i % 2 == 1) {
+            count = count + (s.charAt(i) == '0' ? 1 : 0)
+        } else {
+            count = count + (s.charAt(i) == '1' ? 1 : 0)
+        }
+    }
+    return s.length - count > count ? count : s.length - count
+}
+
+console.log(minOperations("1111"))
+console.log(minOperations("10010100"))
