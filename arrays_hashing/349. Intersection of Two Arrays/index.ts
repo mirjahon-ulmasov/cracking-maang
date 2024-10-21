@@ -31,3 +31,15 @@ function intersection(nums1: number[], nums2: number[]): number[] {
     }
     return result
 }
+
+function intersection2(nums1: number[], nums2: number[]): number[] {
+    const set1 = new Set(nums1)
+    const result: number[] = []
+    for (let value of nums2) {
+        if (set1.has(value)) {
+            result.push(value)
+            set1.delete(value)
+        }
+    }
+    return result
+}
