@@ -14,30 +14,33 @@ Input: wall = [[1],[1],[1]]
 Output: 3
 */
 
+// We DON'T count each bricks, we DO count each gap between brick.
+// If brick were [1000, 1000] there is 2000 bricks in total, but 1 gap, we don't cross all 2000
+// The most gap means least crossing walls
 function leastBricks(wall: number[][]): number {
-    const map = new Map()
-    let largest = 0
-    let sum = wall[0].reduce((acc, cur) => acc + cur, 0)
-
-    for (let i = 1; i < sum; i++) {
-        for (let row = 0; row < wall.length; row++) {
-            let sum = 0
-            for (let brick = 0; brick < wall[row].length; brick++) {
-                if (sum == i) {
-                    map.set(i, (map.get(i) || 0) + 1)
-                    break
-                } else if (sum > i) {
-                    break
-                }
-                sum += wall[row][brick]
-            }
+    const gapsMap = new Map()
+    let maxGap = 0
+    for (let row = 0; row < wall.length; row++) {
+        let position = 0
+        for (let brick = 0; brick < wall[row].length - 1; brick++) {
+            position += wall[row][brick]
+            gapsMap.set(position, (gapsMap.get(position) || 0) + 1)
         }
     }
-    map.forEach((value) => {
-        if(value > largest) largest = value
-    })
-    return sum - largest
+    for (let values of gapsMap.values()) {
+        if (values > maxGap) maxGap = values
+    }
+    return wall.length - maxGap
 }
 
-console.log(leastBricks([[1,2,2,1],[3,1,2],[1,3,2],[2,4],[3,1,2],[1,3,1,1]]));
-console.log(leastBricks([[1],[1],[1]]));
+console.log(
+    leastBricks([
+        [1, 2, 2, 1],
+        [3, 1, 2],
+        [1, 3, 2],
+        [2, 4],
+        [3, 1, 2],
+        [1, 3, 1, 1],
+    ])
+)
+console.log(leastBricks([[1], [1], [1]]))
