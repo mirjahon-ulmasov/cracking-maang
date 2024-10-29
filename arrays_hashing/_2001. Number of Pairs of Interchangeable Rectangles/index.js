@@ -35,6 +35,11 @@ function interchangeableRectangles(rectangles) {
     }
     return count;
 }
+// Hint: n! / (n-k)! * k!
+// Ex: we have A B C D, how many pairs we can create _ _
+// n = 4, k = 2 Solution: 4! / (4-2)! * 2! = 4! / 2! * 2! = 4*3*2/2*2 = 4*3/2 = 6 => (n * (n-1)) / 2
+// AB AC AD BC BD CD
+// Time: O(n) Space: O(n)
 function interchangeableRectangles2(rectangles) {
     var count = 0;
     var ratioCounts = new Map();
@@ -43,8 +48,13 @@ function interchangeableRectangles2(rectangles) {
         ratioCounts.set(ratio, (ratioCounts.get(ratio) || 0) + 1);
     }
     ratioCounts.forEach(function (value) {
-        for (var i = 1; i < value; i++) {
-            count += i;
+        // 1st way
+        // for (let i = 1; i < value; i++) {
+        //     count += i
+        // }
+        // 2nd way
+        if (value > 1) {
+            count += (value * (value - 1)) / 2;
         }
     });
     return count;
