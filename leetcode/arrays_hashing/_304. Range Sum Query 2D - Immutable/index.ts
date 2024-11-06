@@ -95,6 +95,37 @@ class _NumMatrix {
     }
 }
 
+// Best approach
+class __NumMatrix {
+    private prefixSum: number[][]
+    constructor(matrix: number[][]) {
+        const ROWS = matrix.length
+        const COLS = matrix[0].length
+        this.prefixSum = Array.from({ length: ROWS + 1 }, () => {
+            return Array.from({ length: COLS + 1 }, () => 0)
+        })
+
+        for (let row = 0; row < ROWS; row++) {
+            let prefixSum = 0
+            for (let col = 0; col < COLS; col++) {
+                prefixSum += matrix[row][col]
+                const above = this.prefixSum[row][col + 1]
+                this.prefixSum[row + 1][col + 1] = prefixSum + above
+            }
+        }
+    }
+
+    sumRegion(row1: number, col1: number, row2: number, col2: number): number {
+        row1 = row1 + 1, col1 = col1 + 1, row2 = row2 + 1, col2 = col2 + 1
+        const bottomRight = this.prefixSum[row2][col2] // doubleUsedArea + otherArea
+        const above = this.prefixSum[row1 - 1][col2] // doubleUsedArea + otherArea
+        const left = this.prefixSum[row2][col1 - 1]
+        const doubleUsedArea = this.prefixSum[row1 - 1][col1 - 1]
+        return bottomRight - above - left + doubleUsedArea
+    }
+}
+
+
 const numMatrix = new _NumMatrix([
     [3, 0, 1, 4, 2],
     [5, 6, 3, 2, 1],
