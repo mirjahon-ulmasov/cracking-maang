@@ -22,6 +22,24 @@ Input: poured = 100000009, query_row = 33, query_glass = 17
 Output: 1.00000
 */
 
+/*
+Explonation:
+            [4] - We pour 4 cups, 1 remains in the glass, others falls
+        [1.5, 1.5] - Now we have 3 cups left
+    [0.25, 0.5, 0.25]
+*/
 function champagneTower(poured: number, query_row: number, query_glass: number): number {
-    return 0
+    let prevRow = [poured] // Flow
+    for (let row = 1; row < query_row + 1; row++) {
+        let curRow = Array.from({ length: row + 1 }, () => 0)
+        for (let glass = 0; glass < row; glass++) {
+            const extra = prevRow[glass] - 1
+            if (extra > 0) {
+                curRow[glass] += extra / 2
+                curRow[glass + 1] += extra / 2
+            }
+        }
+        prevRow = curRow
+    }
+    return Math.min(1, prevRow[query_glass])
 };
