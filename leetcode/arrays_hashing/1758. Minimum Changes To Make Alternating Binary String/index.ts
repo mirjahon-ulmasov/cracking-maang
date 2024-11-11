@@ -22,7 +22,7 @@ Explanation: You need two operations to reach "0101" or "1010".
 */
 
 // -------------------------------------------------
-function minOperations(s: string): number {
+function _minOperations(s: string): number {
     let count1 = 0
     let count2 = 0
     const arr = s.split("")
@@ -43,7 +43,7 @@ function minOperations(s: string): number {
 // (length of string - count of first operations)
 // So, we takes one operation for example 10101, and compare each characters of string if in odd index char is '1', if no then count++, same stuff in even index with '0'   
 
-function minOperations2(s: string): number {
+function _minOperations2(s: string): number {
     let count = 0
     for (let i = 0; i < s.length; i++) {
         if (i % 2 == 1) {
@@ -55,5 +55,5 @@ function minOperations2(s: string): number {
     return s.length - count > count ? count : s.length - count
 }
 
-console.log(minOperations("1111"))
-console.log(minOperations("10010100"))
+console.log(_minOperations("1111"))
+console.log(_minOperations("10010100"))
