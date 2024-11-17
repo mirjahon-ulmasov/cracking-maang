@@ -12,6 +12,19 @@ Output: [[1]]
 */
 
 function generate(numRows: number): number[][] {
+    const result = [[1]]
+    for (let row = 0; row < numRows - 1; row++) {
+        const curRow = [1]
+        for (let col = 0; col < result[row].length - 1; col++) {
+            curRow.push(result[row][col] + result[row][col + 1])
+        }
+        curRow.push(1)
+        result.push(curRow)
+    }
+    return result
+};
+
+function _generate(numRows: number): number[][] {
     const res = [[1]];
     for (let i = 1; i < numRows; i++) {
         const temp = [...res[i - 1]];
@@ -26,7 +39,7 @@ function generate(numRows: number): number[][] {
     return res;
 }
 
-function generate2(numRows: number): number[][] {
+function __generate(numRows: number): number[][] {
     const result = [[1]];
     if (numRows === 1) {
         return result;
