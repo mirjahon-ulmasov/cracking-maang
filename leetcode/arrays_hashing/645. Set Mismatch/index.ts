@@ -72,5 +72,25 @@ function findErrorNums3(nums: number[]): number[] {
     return res
 }
 
+function _findErrorNums(nums: number[]): number[] {
+    let duplicate = -1
+    let missing = -1
+    for (let i = 0; i < nums.length; i++) {
+        const idx = Math.abs(nums[i]) - 1
+        if (nums[idx] < 0) {
+            duplicate = idx + 1
+        } else {
+            nums[idx] = -nums[idx]
+        }
+    }
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] > 0) {
+            missing = i + 1
+            break
+        }
+    }
+    return [duplicate, missing]
+}
+
 console.log(findErrorNums([2, 3, 2]))
 console.log(findErrorNums([1, 2, 2, 4]))

@@ -29,7 +29,7 @@ function findDisappearedNumbers(nums: number[]): number[] {
     }
     for (let i = 0; i < nums.length; i++) {
         if (nums[i] > 0) {
-            result.push(i + 1)
+            result.push(i + 1) // Disappeared number
         }
     }
     return result

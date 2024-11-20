@@ -43,3 +43,17 @@ function zeroFilledSubarray(nums: number[]): number {
     }
     return total
 }
+
+function _zeroFilledSubarray(nums: number[]): number {
+    let total = 0
+    let count = 0
+    for (let num of nums) {
+        if (num == 0) {
+            count++
+            total += count
+        } else {
+            count = 0
+        }
+    }
+    return total
+}

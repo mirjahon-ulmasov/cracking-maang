@@ -92,6 +92,25 @@ function sortColors3(nums: number[]): void {
     }
 }
 
+function _sortColors(nums: number[]): void {
+    let left = 0, right = nums.length - 1
+    for (let i = 0; i <= right; i++) {
+        if (nums[i] == 0) {
+            swap(i, left)
+            left++
+        } else if (nums[i] == 2) {
+            swap(i, right)
+            i--
+            right--
+        }
+    }
+    function swap(i: number, j: number) {
+        const temp = nums[i]
+        nums[i] = nums[j]
+        nums[j] = temp
+    }
+};
+
 const numbers = [2,0,1]
 sortColors3(numbers)
 console.log(numbers)
