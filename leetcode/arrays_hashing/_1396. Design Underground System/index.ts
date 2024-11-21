@@ -61,7 +61,49 @@ undergroundSystem.checkOut(2, "Paradise", 30); // Customer 2 "Leyton" -> "Paradi
 undergroundSystem.getAverageTime("Leyton", "Paradise"); // return 6.66667, (5 + 6 + 9) / 3 = 6.66667
 */
 
+interface ICheckInStation {
+    station: string
+    time: number
+}
+
+interface ITravelStations {
+    total: number
+    trips: number
+}
 class UndergroundSystem {
+    private checkInStations: Map<number, ICheckInStation>
+    private travelStations: Map<string, ITravelStations>
+    constructor() {
+        this.checkInStations = new Map()
+        this.travelStations = new Map()
+    }
+
+    checkIn(id: number, stationName: string, t: number): void {
+        this.checkInStations.set(id, { station: stationName, time: t })
+    }
+
+    checkOut(id: number, stationName: string, t: number): void {
+        const { station, time } = this.checkInStations.get(id) as ICheckInStation
+        const stations = station + "-" + stationName
+        if (this.travelStations.has(stations)) {
+            const { total, trips } = this.travelStations.get(stations) as ITravelStations
+            this.travelStations.set(stations, {
+                total: total + (t - time),
+                trips: trips + 1,
+            })
+        } else {
+            this.travelStations.set(stations, { total: t - time, trips: 1 })
+        }
+    }
+
+    getAverageTime(startStation: string, endStation: string): number {
+        const stations = startStation + "-" + endStation
+        const { total, trips } = this.travelStations.get(stations) as ITravelStations
+        return total / trips
+    }
+}
+
+class _UndergroundSystem {
     private checkInTimes: Map<number, [string, number]>
     private times: Map<string, number[]>
     constructor() {
@@ -74,7 +116,7 @@ class UndergroundSystem {
     }
 
     checkOut(id: number, stationName: string, t: number): void {
-        if (!this.checkInTimes.has(id)) return;
+        if (!this.checkInTimes.has(id)) return
 
         const [station, time] = this.checkInTimes.get(id) as [string, number]
         const stations = station + "-" + stationName
