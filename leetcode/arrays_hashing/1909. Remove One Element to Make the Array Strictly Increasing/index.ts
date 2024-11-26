@@ -27,6 +27,20 @@ Explanation: The result of removing any element is [1,1].
 */
 
 function canBeIncreasing(nums: number[]): boolean {
+    let isRemoved = false
+    for (let i = 0; i < nums.length - 1; i++) {
+        if (nums[i] < nums[i + 1]) continue;
+        if (isRemoved) return false
+
+        if (i > 0 && nums[i - 1] >= nums[i + 1]) {
+            nums[i + 1] = nums[i]
+        }
+        isRemoved = true;
+    }
+    return true
+};
+
+function _canBeIncreasing(nums: number[]): boolean {
     let index = -1
     let count = 0
     for (let i = 1; i < nums.length; i++) {
