@@ -25,6 +25,18 @@ It does not matter what you leave beyond the returned k (hence they are undersco
 */
 
 function removeDuplicates(nums: number[]): number {
+    if (nums.length <= 2) return nums.length;
+    let k = 2
+    for (let i = 2; i < nums.length; i++) {
+        if (nums[i] != nums[k - 2]) {
+            nums[k] = nums[i]
+            k += 1
+        }
+    }
+    return k
+};
+
+function _removeDuplicates(nums: number[]): number {
     let left = 0, right = 0
     while (right < nums.length) {
         let count = 1
@@ -42,7 +54,7 @@ function removeDuplicates(nums: number[]): number {
     return left
 }
 
-function _removeDuplicates(nums: number[]): number {
+function __removeDuplicates(nums: number[]): number {
     let left = 2
     for (let right = 2; right < nums.length; right++) {
         if (nums[right] == nums[left - 1] && nums[left - 1] == nums[left - 2]) {
