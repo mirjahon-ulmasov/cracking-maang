@@ -27,6 +27,32 @@ Follow up: Can you solve it in O(n) time and O(1) space?
 */
 
 function backspaceCompare(s: string, t: string): boolean {
+    function nextValidChar(word: string, right: number) {
+        let count = 0
+        while (right >= 0) {
+            if (word[right] == "#") {
+                count += 1
+            } else if (count > 0) {
+                count -= 1
+            } else {
+                return right
+            }
+            right -= 1
+        }
+        return right
+    }
+    let sIdx = s.length, tIdx = t.length
+    while (sIdx >= 0 && tIdx >= 0) {
+        sIdx = nextValidChar(s, sIdx - 1)
+        tIdx = nextValidChar(t, tIdx - 1)
+
+        if (sIdx == -1 && tIdx == -1) return true
+        if (s[sIdx] != t[tIdx]) return false
+    }
+    return true
+}
+
+function _backspaceCompare(s: string, t: string): boolean {
     let str1 = "", str2 = "", count = 0
     for (let i = s.length - 1; i >= 0; i--) {
         if (s[i] == "#") count++
