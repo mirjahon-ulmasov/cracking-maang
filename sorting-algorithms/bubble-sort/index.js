@@ -1,7 +1,7 @@
 // Bubble sort
-function bubbleSort(nums: number[]): number[] {
+function bubbleSort(nums) {
     let swapped
-    function swap(i: number, j: number) {
+    function swap(i, j) {
         const temp = nums[i]
         nums[i] = nums[j]
         nums[j] = temp
