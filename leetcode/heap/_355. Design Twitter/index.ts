@@ -32,63 +32,47 @@ twitter.getNewsFeed(1);  // User 1's news feed should return a list with 1 tweet
 */
 
 class Twitter {
-    public tweetMap: Map<number, [number, number][]> // [time, tweetId]
-    public followerMap: Map<number, Set<number>>
+    public tweetMap: Map<number, [number, number][]> // [tweetId, time]
+    public followMap: Map<number, Set<number>> // followee set
     public timestamp: number
     constructor() {
         this.tweetMap = new Map()
-        this.followerMap = new Map()
+        this.followMap = new Map()
         this.timestamp = 0
     }
 
     postTweet(userId: number, tweetId: number): void {
         if (!this.tweetMap.has(userId)) this.tweetMap.set(userId, [])
-        this.tweetMap.get(userId)?.push([this.timestamp, tweetId])
+        this.tweetMap.get(userId)!.push([tweetId, this.timestamp])
         this.timestamp++
     }
 
     getNewsFeed(userId: number): number[] {
-        const users = this.followerMap.get(userId) || new Set()
+        const users = this.followMap.get(userId) || new Set()
         users.add(userId)
-        const minPQ = new MinPriorityQueue<[number, number]>({
-            compare(a, b) {
-                return a[0] - b[0]
-            },
-        })
-        for (let user_id of users) {
-            const tweets = this.tweetMap.get(user_id) || []
-            // We need to take maximum last 10 tweets
-            for (let i = tweets.length - 1; i >= Math.max(0, tweets.length - 10); i++) {
-                minPQ.enqueue(tweets[i])
-                
-                if (minPQ.size() > 10) {
-                    minPQ.dequeue()
+
+        const minHeap = new MinPriorityQueue<[number, number]>(el => el[1])
+        for (let user of users) {
+            const tweets = this.tweetMap.get(user) || []
+            for (let tweet of tweets) {
+                minHeap.enqueue(tweet)
+
+                if (minHeap.size() > 10) {
+                    minHeap.dequeue()
                 }
             }
         }
-        return minPQ.toArray().map(item => item[1]).sort((a, b) => b - a)
+        return minHeap.toArray().reverse().map(el => el[0])
     }
 
     follow(followerId: number, followeeId: number): void {
-        if (!this.followerMap.has(followerId)) this.followerMap.set(followerId, new Set())
-        this.followerMap.get(followerId)?.add(followeeId)
+        if (!this.followMap.has(followerId)) this.followMap.set(followerId, new Set())
+        this.followMap.get(followerId)!.add(followeeId)
     }
 
     unfollow(followerId: number, followeeId: number): void {
-        if (this.followerMap.has(followerId)) {
-            this.followerMap.get(followerId)?.delete(followeeId)
+        if (this.followMap.has(followerId)) {
+            this.followMap.get(followerId)!.delete(followeeId)
         }
     }
 }
-
-const twitter = new Twitter()
-
-twitter.postTweet(1, 5)
-console.log(twitter.getNewsFeed(1))
-
-twitter.follow(1, 2)
-twitter.postTweet(2, 6)
-console.log(twitter.getNewsFeed(1))
-
-twitter.unfollow(1, 2)
-console.log(twitter.getNewsFeed(1))
