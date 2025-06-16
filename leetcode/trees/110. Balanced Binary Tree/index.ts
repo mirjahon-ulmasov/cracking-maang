@@ -1,3 +1,5 @@
+import { TreeNode } from ".."
+
 function isBalanced(root: TreeNode | null): boolean {
     let maxDiff = 0
     function dfs(node: TreeNode | null): number {
