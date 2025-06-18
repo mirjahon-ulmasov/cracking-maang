@@ -27,17 +27,20 @@ Note that because m = 0, there are no elements in nums1. The 0 is only there to 
 
 // Put largest element to rightmost
 function merge(nums1: number[], m: number, nums2: number[], n: number): void {
-    let last = nums1.length - 1
-    m -= 1
-    n -= 1
+    let i = m + n - 1
+    m--
+    n--
     while (m >= 0 && n >= 0) {
-        if (nums1[m] > nums2[n]) {
-            nums1[last--] = nums1[m--]
-        } else {
-            nums1[last--] = nums2[n--]
-        }
+        if (nums1[m] > nums2[n]) nums1[i--] = nums1[m--]
+        else nums1[i--] = nums2[n--]
     }
+
+    // ------ we dont need this code, it doesn't change anything ------
+    // while (m >= 0) {
+    //     nums1[i--] = nums1[m--]
+    // }
+    
     while (n >= 0) {
-        nums1[last--] = nums2[n--]
+        nums1[i--] = nums2[n--]
     }
 };
