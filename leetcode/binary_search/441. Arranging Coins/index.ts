@@ -18,3 +18,12 @@ function arrangeCoins(n: number): number {
     }
     return result
 }
+
+function _arrangeCoins(n: number): number {
+    let rows = 1
+    while (n >= rows) {
+        n -= rows
+        rows++
+    }
+    return rows - 1
+};
