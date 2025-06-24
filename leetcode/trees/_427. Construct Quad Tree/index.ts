@@ -1,4 +1,3 @@
-import { _Node } from './../index';
 /*
 Given a n * n matrix grid of 0's and 1's only. We want to represent grid with a Quad-Tree.
 
@@ -22,9 +21,32 @@ If the current grid has the same value (i.e all 1's or all 0's) set isLeaf True 
 If the current grid has different values, set isLeaf to False and set val to any value and divide the current grid into four sub-grids as shown in the photo.
 Recurse for each of the children with the proper sub-grid.
 */
+class _QNode {
+    val: boolean
+    isLeaf: boolean
+    topLeft: _QNode | null
+    topRight: _QNode | null
+    bottomLeft: _QNode | null
+    bottomRight: _QNode | null
+    constructor(
+        val?: boolean,
+        isLeaf?: boolean,
+        topLeft?: _QNode,
+        topRight?: _QNode,
+        bottomLeft?: _QNode,
+        bottomRight?: _QNode
+    ) {
+        this.val = val === undefined ? false : val
+        this.isLeaf = isLeaf === undefined ? false : isLeaf
+        this.topLeft = topLeft === undefined ? null : topLeft
+        this.topRight = topRight === undefined ? null : topRight
+        this.bottomLeft = bottomLeft === undefined ? null : bottomLeft
+        this.bottomRight = bottomRight === undefined ? null : bottomRight
+    }
+}
 
-function construct(grid: number[][]): _Node | null {
-    function dfs(length: number, row: number, col: number): _Node {
+function construct(grid: number[][]): _QNode | null {
+    function dfs(length: number, row: number, col: number): _QNode {
         const value = grid[row][col]
         let isSame = true
         outer: for (let i = 0; i < length; i++) {
@@ -36,7 +58,7 @@ function construct(grid: number[][]): _Node | null {
             }
         }
 
-        if (isSame) return new _Node(Boolean(value), true)
+        if (isSame) return new _QNode(Boolean(value), true)
 
         length /= 2
         const topLeft = dfs(length, row, col)
@@ -44,7 +66,7 @@ function construct(grid: number[][]): _Node | null {
         const bottomLeft = dfs(length, row + length, col)
         const bottomRight = dfs(length, row + length, col + length)
 
-        return new _Node(false, false, topLeft, topRight, bottomLeft, bottomRight)
+        return new _QNode(false, false, topLeft, topRight, bottomLeft, bottomRight)
     }
     return dfs(grid.length, 0, 0)
 };
