@@ -18,8 +18,49 @@ The substring with start index = 1 is "ba", which is an anagram of "ab".
 The substring with start index = 2 is "ab", which is an anagram of "ab".
 */
 
-// Brute force approach
 function findAnagrams(s: string, p: string): number[] {
+    if (s.length < p.length) return []
+    const sCount = new Array(26).fill(0)
+    const pCount = new Array(26).fill(0)
+    const aIdx = 'a'.charCodeAt(0)
+    let matches = 0
+    for (let i = 0; i < p.length; i++) {
+        sCount[s[i].charCodeAt(0) - aIdx]++
+        pCount[p[i].charCodeAt(0) - aIdx]++
+    }
+
+    for (let i = 0; i < 26; i++) {
+        if (sCount[i] == pCount[i]) {
+            matches++
+        }
+    }
+
+    const result: number[] = []
+    for (let i = p.length; i < s.length; i++) {
+        if (matches == 26) {
+            result.push(i - p.length)
+        }
+
+        const removedIdx = s[i - p.length].charCodeAt(0) - aIdx
+        sCount[removedIdx]--
+        if (sCount[removedIdx] == pCount[removedIdx]) matches++
+        else if (sCount[removedIdx] + 1 == pCount[removedIdx]) matches--
+
+        const addedIdx = s[i].charCodeAt(0) - aIdx
+        sCount[addedIdx]++
+        if (sCount[addedIdx] == pCount[addedIdx]) matches++
+        if (sCount[addedIdx] - 1 == pCount[addedIdx]) matches--
+    }
+
+    if (matches == 26) {
+        result.push(s.length - p.length)
+    };
+
+    return result
+}
+
+// Brute force approach
+function _findAnagrams(s: string, p: string): number[] {
     const pMap = new Map()
     const sMap = new Map()
     const result = []

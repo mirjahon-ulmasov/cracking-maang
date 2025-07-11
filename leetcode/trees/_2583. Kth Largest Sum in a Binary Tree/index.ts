@@ -14,6 +14,29 @@ Explanation: The level sums are the following:
 - Level 4: 4 + 6 = 10.
 The 2nd largest level sum is 13.
 */
+
+function kthLargestLevelSum(root: TreeNode | null, k: number): number {
+    const minHeap = new MinPriorityQueue<number>()
+    const queue = [root]
+    let sum = 0
+    while (queue.length) {
+        const n = queue.length
+        for (let i = 0; i < n; i++) {
+            const node = queue.shift()!
+            sum += node.val
+
+            if (node.left) queue.push(node.left)
+            if (node.right) queue.push(node.right)
+        }
+        minHeap.enqueue(sum)
+        sum = 0
+        if (minHeap.size() > k) {
+            minHeap.dequeue()
+        }
+    }
+    return minHeap.size() < k ? -1 : minHeap.front()
+};
+
 function kthLargestLevelSum(root: TreeNode | null, k: number): number {
     const queue = [root]
     const levelSums = []
