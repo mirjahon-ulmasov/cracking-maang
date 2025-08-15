@@ -17,69 +17,65 @@ unlock(int num, int user) returns true if it is possible for the user with id us
 upgrade(int num, int user) returns true if it is possible for the user with id user to upgrade the node num, or false otherwise. If it is possible, the node num will be upgraded.
 */
 // @ts-nocheck
-interface Node {
-    parentID: number
-    userID: number | null
-}
 class LockingTree {
-    public nodes: Map<number, Node>
-    public children: Map<number, number[]>
+    nodes: Array<number>
+    childToParent: Array<number>
+    parentToChild: Map<number, number[]>
     constructor(parent: number[]) {
-        this.nodes = new Map()
-        this.children = new Map()
-
+        this.nodes = new Array(parent.length).fill(0)
+        this.childToParent = parent
+        this.parentToChild = new Map<number, number[]>()
         for (let i = 0; i < parent.length; i++) {
-            this.nodes.set(i, { parentID: parent[i], userID: null })
-
-            if (!this.children.has(parent[i])) this.children.set(parent[i], [])
-            this.children.get(parent[i])!.push(i)
+            if (!this.parentToChild.has(parent[i])) {
+                this.parentToChild.set(parent[i], [])
+            }
+            this.parentToChild.get(parent[i]).push(i)
         }
     }
+
     lock(num: number, user: number): boolean {
-        if (!this.nodes.has(num)) return false
-        const node = this.nodes.get(num)
-        if (node.userID != null) return false
-        node.userID = user
-        return true
-    }
-    unlock(num: number, user: number): boolean {
-        if (!this.nodes.has(num)) return false
-        const node = this.nodes.get(num)
-        if (node.userID != user) return false
-        node.userID = null
-        return true
-    }
-    upgrade(num: number, user: number): boolean {
-        if (!this.checkAncestor(num)) return false
-        if (!this.checkDescendant(num)) return false
-
-        this.updateDescendant(num)
-        const node = this.nodes.get(num)
-        node.userID = user
-        return true
-    }
-    checkAncestor(val: number): boolean {
-        while (val != -1) {
-            const node = this.nodes.get(val)
-            if (node.userID != null) return false
-            val = node.parentID
-        }
-        return true
-    }
-    checkDescendant(val: number): boolean {
-        for (let child of this.children.get(val) || []) {
-            const childNode = this.nodes.get(child)
-
-            if (childNode.userID) return true
-            if (this.checkDescendant(child)) return true
+        if (this.nodes[num] == 0) {
+            this.nodes[num] = user
+            return true
         }
         return false
     }
-    updateDescendant(val: number): void {
-        for (let child of this.children.get(val) || []) {
-            const childNode = this.nodes.get(child)
-            childNode.userID = null
-            this.updateDescendant(child)
+
+    unlock(num: number, user: number): boolean {
+        if (this.nodes[num] == user) {
+            this.nodes[num] = 0
+            return true
+        }
+        return false
+    }
+
+    upgrade(num: number, user: number): boolean {
+        if (this.hasLockedAncestors(num)) return false
+        if (!this.hasLockedDescendant(num)) return false
+
+        this.nodes[num] = user
+        this.unlockDescendant(num)
+        return true
+    }
+
+    hasLockedAncestors(node: number): boolean {
+        while (node != -1) {
+            if (this.nodes[node] != 0) return true
+            node = this.childToParent[node]
+        }
+        return false
+    }
+    hasLockedDescendant(node: number): boolean {
+        for (let child of this.parentToChild.get(node) || []) {
+            if (this.nodes[child] != 0) return true
+            if (this.hasLockedDescendant(child)) return true
+        }
+        return false
+    }
+    unlockDescendant(node: number): void {
+        for (let child of this.parentToChild.get(node) || []) {
+            this.nodes[child] = 0
+            this.unlockDescendant(child)
         }
     }
 }
